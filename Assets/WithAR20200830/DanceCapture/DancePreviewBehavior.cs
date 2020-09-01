@@ -34,6 +34,8 @@ namespace WithAR20200830.DanceCapture
 
 		void Start()
 		{
+			_previewViewRoot.SetActive(false);
+			
 			_backButton
 				.OnClickAsObservable()
 				.Subscribe(_ => SetActive(false))
