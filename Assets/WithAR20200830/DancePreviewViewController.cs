@@ -1,4 +1,5 @@
-using System.Collections;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,7 +18,10 @@ namespace WithAR20200830
 		GameObject _previewViewRoot;
 
 		[SerializeField]
-		Button _backButton;
+		Button _cancelButton;
+
+		[SerializeField]
+		Button _submitButton;
 
 		[SerializeField]
 		RawImage _previewImage;
@@ -29,15 +33,22 @@ namespace WithAR20200830
 		Camera _previewCamera;
 
 		RenderTexture _previewRenderTexture;
-		Dance _previewedDanceCapture;
+		CancellationTokenSource _canceller;
+
+		public Dance Capture { private get; set; }
 
 		void Start()
 		{
 			_previewViewRoot.SetActive(false);
-			
-			_backButton
+
+			_cancelButton
 				.OnClickAsObservable()
-				.Subscribe(_ => SetActive(false))
+				.Subscribe(_ => OnCancelButtonPressed())
+				.AddTo(this);
+
+			_submitButton
+				.OnClickAsObservable()
+				.Subscribe(_ => OnSubmitButtonPressed())
 				.AddTo(this);
 
 			_previewRenderTexture = new RenderTexture(Screen.width, Screen.height, 24);
@@ -48,7 +59,24 @@ namespace WithAR20200830
 
 		void OnDestroy()
 		{
+			TaskUtils.Cancel(ref _canceller);
 			_previewRenderTexture.OrNull()?.Destroy();
+		}
+
+		void OnCancelButtonPressed()
+		{
+			TaskUtils.Cancel(ref _canceller);
+			SetActive(false);
+		}
+
+		void OnSubmitButtonPressed()
+		{
+			TaskUtils.Cancel(ref _canceller);
+
+			var bytes = DanceConverter.SerializeDance(Capture);
+			var mb = (float) bytes.Length / 1024 / 1024;
+			Debug.Log("============================================\n" +
+			          $"Dance binary size: {mb:0.000}");
 		}
 
 		void SetActive(bool active)
@@ -56,37 +84,35 @@ namespace WithAR20200830
 			_previewViewRoot.SetActive(active);
 		}
 
-		public void PreviewDance(Dance danceCapture)
+		public async void PreviewDance()
 		{
-			_previewedDanceCapture = danceCapture;
-			SetActive(true);
-			StartCoroutine(StartPreviewing());
-		}
+			TaskUtils.Reset(ref _canceller);
 
-		IEnumerator StartPreviewing()
-		{
+			SetActive(true);
+
 			_previewBodyController.InitializeSkeletonJoints();
 
-			var lastDanceFrameIndex = 0;
-			var previewStartTime = Time.time;
+			var frameIndex = 0;
+			var startTime = Time.time;
 
-			while (this)
+			while (!_canceller.IsCancellationRequested)
 			{
-				var frame = _previewedDanceCapture.Frames[lastDanceFrameIndex];
-				var previewTime = Time.time - previewStartTime;
+				var frame = Capture.Frames[frameIndex];
+				var previewTime = Time.time - startTime;
 				if (previewTime > frame.TimestampSecs)
 				{
 					_previewBodyController.ApplyBodyPose(frame);
-
-					lastDanceFrameIndex += 1;
-
-					if (lastDanceFrameIndex >= _previewedDanceCapture.Frames.Count)
-					{
-						lastDanceFrameIndex = 0;
-					}
+					frameIndex += 1;
 				}
 
-				yield return null;
+				// repeat
+				if (frameIndex >= Capture.Frames.Count)
+				{
+					frameIndex = 0;
+					startTime = 0;
+				}
+
+				await UniTask.Yield();
 			}
 		}
 	}
