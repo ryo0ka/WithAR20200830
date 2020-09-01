@@ -50,11 +50,9 @@ namespace UnityEngine.XR.ARFoundation.Samples
 
         void OnHumanBodiesChanged(ARHumanBodiesChangedEventArgs eventArgs)
         {
-            BoneController boneController;
-
             foreach (var humanBody in eventArgs.added)
             {
-                if (!m_SkeletonTracker.TryGetValue(humanBody.trackableId, out boneController))
+                if (!m_SkeletonTracker.TryGetValue(humanBody.trackableId, out var boneController))
                 {
                     Debug.Log($"Adding a new skeleton [{humanBody.trackableId}].");
                     var newSkeletonGO = Instantiate(m_SkeletonPrefab, humanBody.transform);
@@ -68,7 +66,7 @@ namespace UnityEngine.XR.ARFoundation.Samples
 
             foreach (var humanBody in eventArgs.updated)
             {
-                if (m_SkeletonTracker.TryGetValue(humanBody.trackableId, out boneController))
+                if (m_SkeletonTracker.TryGetValue(humanBody.trackableId, out var boneController))
                 {
                     boneController.ApplyBodyPose(humanBody);
                 }
@@ -77,7 +75,7 @@ namespace UnityEngine.XR.ARFoundation.Samples
             foreach (var humanBody in eventArgs.removed)
             {
                 Debug.Log($"Removing a skeleton [{humanBody.trackableId}].");
-                if (m_SkeletonTracker.TryGetValue(humanBody.trackableId, out boneController))
+                if (m_SkeletonTracker.TryGetValue(humanBody.trackableId, out var boneController))
                 {
                     Destroy(boneController.gameObject);
                     m_SkeletonTracker.Remove(humanBody.trackableId);

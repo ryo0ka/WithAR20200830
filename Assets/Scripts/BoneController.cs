@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.XR.ARSubsystems;
 using System.Collections.Generic;
 using System;
+using WithAR20200830.Models;
 
 namespace UnityEngine.XR.ARFoundation.Samples
 {
@@ -161,6 +162,19 @@ namespace UnityEngine.XR.ARFoundation.Samples
                     bone.transform.localPosition = joint.localPose.position;
                     bone.transform.localRotation = joint.localPose.rotation;
                 }
+            }
+        }
+
+        public void ApplyBodyPose(CapturedDanceFrame bodyFrame)
+        {
+            for (int i = 0; i < k_NumSkeletonJoints; ++i)
+            {
+                var bone = m_BoneMapping[i];
+                if (bone == null) continue;
+             
+                var joint = bodyFrame.Joints[i];   
+                bone.transform.localPosition = joint.LocalPosePosition;
+                bone.transform.localRotation = joint.LocalPoseRotation;
             }
         }
 
