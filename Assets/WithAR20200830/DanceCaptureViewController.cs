@@ -69,6 +69,8 @@ namespace WithAR20200830
 		void EndCapture()
 		{
 			_isCapturing = false;
+			_beginCaptureButton.interactable = true;
+			_endCaptureButton.interactable = false;
 
 			if (!_capturedBodies.Any()) return;
 
@@ -84,10 +86,8 @@ namespace WithAR20200830
 				Frames = capturedFrames,
 			};
 
-			_previewViewController.PreviewDance(dance);
-
-			_beginCaptureButton.interactable = true;
-			_endCaptureButton.interactable = false;
+			_previewViewController.Capture = dance;
+			_previewViewController.PreviewDance();
 		}
 
 		void OnHumanBodiesChanged(ARHumanBodiesChangedEventArgs eventArgs)
@@ -101,6 +101,7 @@ namespace WithAR20200830
 				// shouldn't happen but just in case
 				if (!arHumanBody.joints.IsCreated) continue;
 				
+				// set up frames
 				var trackedId = arHumanBody.trackableId;
 				if (!_capturedBodies.TryGetValue(trackedId, out var frames))
 				{
