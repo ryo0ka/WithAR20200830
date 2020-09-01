@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UniRx;
 using UnityEngine;
@@ -7,9 +6,9 @@ using UnityEngine.XR.ARFoundation.Samples;
 using WithAR20200830.Models;
 using WithAR20200830.Utils;
 
-namespace WithAR20200830.DanceCapture
+namespace WithAR20200830
 {
-	public class DancePreviewBehavior : MonoBehaviour
+	public class DancePreviewViewController : MonoBehaviour
 	{
 		[SerializeField]
 		BoneController _previewBodyController;
@@ -30,7 +29,7 @@ namespace WithAR20200830.DanceCapture
 		Camera _previewCamera;
 
 		RenderTexture _previewRenderTexture;
-		CapturedDance _previewedDance;
+		Dance _previewedDanceCapture;
 
 		void Start()
 		{
@@ -57,9 +56,9 @@ namespace WithAR20200830.DanceCapture
 			_previewViewRoot.SetActive(active);
 		}
 
-		public void PreviewDance(CapturedDance dance)
+		public void PreviewDance(Dance danceCapture)
 		{
-			_previewedDance = dance;
+			_previewedDanceCapture = danceCapture;
 			SetActive(true);
 			StartCoroutine(StartPreviewing());
 		}
@@ -73,7 +72,7 @@ namespace WithAR20200830.DanceCapture
 
 			while (this)
 			{
-				var frame = _previewedDance.Frames[lastDanceFrameIndex];
+				var frame = _previewedDanceCapture.Frames[lastDanceFrameIndex];
 				var previewTime = Time.time - previewStartTime;
 				if (previewTime > frame.TimestampSecs)
 				{
@@ -81,7 +80,7 @@ namespace WithAR20200830.DanceCapture
 
 					lastDanceFrameIndex += 1;
 
-					if (lastDanceFrameIndex >= _previewedDance.Frames.Count)
+					if (lastDanceFrameIndex >= _previewedDanceCapture.Frames.Count)
 					{
 						lastDanceFrameIndex = 0;
 					}

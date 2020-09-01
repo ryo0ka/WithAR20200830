@@ -7,15 +7,15 @@ using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 using WithAR20200830.Models;
 
-namespace WithAR20200830.DanceCapture
+namespace WithAR20200830
 {
-	public class DanceCaptureBehavior : MonoBehaviour
+	public class DanceCaptureViewController : MonoBehaviour
 	{
 		[SerializeField]
 		ARHumanBodyManager _arHumanBodyManager;
 
 		[SerializeField]
-		DancePreviewBehavior _previewBehavior;
+		DancePreviewViewController _previewViewController;
 
 		[SerializeField]
 		Button _beginCaptureButton;
@@ -23,13 +23,13 @@ namespace WithAR20200830.DanceCapture
 		[SerializeField]
 		Button _endCaptureButton;
 
-		Dictionary<TrackableId, List<CapturedDanceFrame>> _capturedBodies;
+		Dictionary<TrackableId, List<DanceFrame>> _capturedBodies;
 		float _captureStartTime;
 		bool _isCapturing;
 
 		void Awake()
 		{
-			_capturedBodies = new Dictionary<TrackableId, List<CapturedDanceFrame>>();
+			_capturedBodies = new Dictionary<TrackableId, List<DanceFrame>>();
 		}
 
 		void Start()
@@ -79,12 +79,12 @@ namespace WithAR20200830.DanceCapture
 					.First()
 					.Value;
 
-			var dance = new CapturedDance
+			var dance = new Dance
 			{
 				Frames = capturedFrames,
 			};
 
-			_previewBehavior.PreviewDance(dance);
+			_previewViewController.PreviewDance(dance);
 
 			_beginCaptureButton.interactable = true;
 			_endCaptureButton.interactable = false;
@@ -98,17 +98,18 @@ namespace WithAR20200830.DanceCapture
 
 			foreach (var arHumanBody in eventArgs.updated)
 			{
+				// shouldn't happen but just in case
+				if (!arHumanBody.joints.IsCreated) continue;
+				
 				var trackedId = arHumanBody.trackableId;
 				if (!_capturedBodies.TryGetValue(trackedId, out var frames))
 				{
-					frames = new List<CapturedDanceFrame>();
+					frames = new List<DanceFrame>();
 					_capturedBodies[trackedId] = frames;
 				}
 
-				if (CapturedDanceFrame.TryCreate(timestamp, arHumanBody, out var frame))
-				{
-					frames.Add(frame);
-				}
+				var frame = DanceConverter.CreateFrame(timestamp, arHumanBody);
+				frames.Add(frame);
 			}
 		}
 	}

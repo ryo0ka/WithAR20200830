@@ -165,7 +165,7 @@ namespace UnityEngine.XR.ARFoundation.Samples
             }
         }
 
-        public void ApplyBodyPose(CapturedDanceFrame bodyFrame)
+        public void ApplyBodyPose(DanceFrame bodyFrame)
         {
             for (int i = 0; i < k_NumSkeletonJoints; ++i)
             {
