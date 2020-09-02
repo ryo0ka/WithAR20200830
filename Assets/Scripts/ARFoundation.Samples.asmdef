@@ -1,0 +1,24 @@
+{
+    "name": "ARFoundation.Samples",
+    "references": [
+        "GUID:d03624f02fd4aef4aa6b888a1b059ad7",
+        "GUID:a9420e37d7990b54abdef6688edbe313",
+        "GUID:dfd0ce20189d48e5b22bb4134b558f5a",
+        "GUID:6a539ac6c932246bd946aa409b684bb2",
+        "GUID:92703082f92b41ba80f0d6912de66115",
+        "GUID:fe685ec1767f73d42b749ea8045bfe43",
+        "GUID:e40ba710768534012815d3193fa296cb",
+        "GUID:999681c7ffab0480997e5c0752c60948",
+        "GUID:ba171b3dd2a51234ab864770f99741a5",
+        "GUID:75469ad4d38634e559750d17036d5f7c"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
