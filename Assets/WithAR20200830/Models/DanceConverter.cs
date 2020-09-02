@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
+using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 
 namespace WithAR20200830.Models
@@ -49,6 +51,51 @@ namespace WithAR20200830.Models
 				}
 
 				return stream.ToArray();
+			}
+		}
+
+		public static Dance DeserializeDance(byte[] danceBinary)
+		{
+			using (var stream = new MemoryStream(danceBinary))
+			using (var reader = new BinaryReader(stream))
+			{
+				var frameCount = reader.ReadInt32();
+				var frames = new DanceFrame[frameCount];
+
+				for (var i = 0; i < frameCount; i++)
+				{
+					var timestamp = reader.ReadSingle();
+					var jointCount = reader.ReadInt32();
+					var joints = new DanceJoint[jointCount];
+
+					for (int j = 0; j < jointCount; j++)
+					{
+						var posX = reader.ReadSingle();
+						var posY = reader.ReadSingle();
+						var posZ = reader.ReadSingle();
+						var rotW = reader.ReadSingle();
+						var rotX = reader.ReadSingle();
+						var rotY = reader.ReadSingle();
+						var rotZ = reader.ReadSingle();
+
+						joints[j] = new DanceJoint
+						{
+							LocalPosePosition = new Vector3(posX, posY, posZ),
+							LocalPoseRotation = new Quaternion(rotX, rotY, rotZ, rotW),
+						};
+					}
+
+					frames[i] = new DanceFrame
+					{
+						TimestampSecs = timestamp,
+						Joints = joints,
+					};
+				}
+
+				return new Dance
+				{
+					Frames = frames,
+				};
 			}
 		}
 	}

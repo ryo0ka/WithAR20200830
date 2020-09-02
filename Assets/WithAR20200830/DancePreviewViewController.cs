@@ -1,9 +1,8 @@
 using System.Threading;
-using Cysharp.Threading.Tasks;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.XR.ARFoundation.Samples;
+using WithAR20200830.Business;
 using WithAR20200830.Models;
 using WithAR20200830.Utils;
 
@@ -12,7 +11,7 @@ namespace WithAR20200830
 	public class DancePreviewViewController : MonoBehaviour
 	{
 		[SerializeField]
-		BoneController _previewBodyController;
+		AvatarDanceController _danceController;
 
 		[SerializeField]
 		GameObject _previewViewRoot;
@@ -32,13 +31,18 @@ namespace WithAR20200830
 		[SerializeField]
 		Camera _previewCamera;
 
+		OnlineDanceClient _onlineDanceClient;
 		RenderTexture _previewRenderTexture;
 		CancellationTokenSource _canceller;
+		AvatarDanceController.Config _previewConfig;
 
 		public Dance Capture { private get; set; }
 
 		void Start()
 		{
+			_onlineDanceClient = ServiceLocator.Instance.Locate<OnlineDanceClient>();
+			_previewConfig = new AvatarDanceController.Config();
+
 			_previewViewRoot.SetActive(false);
 
 			_cancelButton
@@ -73,10 +77,8 @@ namespace WithAR20200830
 		{
 			TaskUtils.Cancel(ref _canceller);
 
-			var bytes = DanceConverter.SerializeDance(Capture);
-			var mb = (float) bytes.Length / 1024 / 1024;
-			Debug.Log("============================================\n" +
-			          $"Dance binary size: {mb:0.000}");
+			_onlineDanceClient.StartNewDance(Capture);
+			SceneController.Instance.UnloadDanceCaptureScene();
 		}
 
 		void SetActive(bool active)
@@ -84,36 +86,13 @@ namespace WithAR20200830
 			_previewViewRoot.SetActive(active);
 		}
 
-		public async void PreviewDance()
+		public void PreviewDance()
 		{
 			TaskUtils.Reset(ref _canceller);
 
 			SetActive(true);
 
-			_previewBodyController.InitializeSkeletonJoints();
-
-			var frameIndex = 0;
-			var startTime = Time.time;
-
-			while (!_canceller.IsCancellationRequested)
-			{
-				var frame = Capture.Frames[frameIndex];
-				var previewTime = Time.time - startTime;
-				if (previewTime > frame.TimestampSecs)
-				{
-					_previewBodyController.ApplyBodyPose(frame);
-					frameIndex += 1;
-				}
-
-				// repeat
-				if (frameIndex >= Capture.Frames.Count)
-				{
-					frameIndex = 0;
-					startTime = 0;
-				}
-
-				await UniTask.Yield();
-			}
+			_danceController.StartDancing(Capture, _canceller.Token, _previewConfig);
 		}
 	}
 }

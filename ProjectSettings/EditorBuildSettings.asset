@@ -6,7 +6,10 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/WithAR20200830/_Assets_/Dance Capture.unity
+    path: Assets/WithAR20200830.Assets/Scenes/Main.unity
+    guid: a675caf0fe1c9413e8070234aa3de911
+  - enabled: 1
+    path: Assets/WithAR20200830.Assets/Scenes/Dance Capture.unity
     guid: 552b9900bd24f4764bcab267c9f3f3e3
   m_configObjects:
     UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: f8ce26fe3bc69499b9be4b2378e97a94,

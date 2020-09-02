@@ -54,6 +54,8 @@ namespace WithAR20200830
 				.Where(_ => _isCapturing)
 				.Subscribe(_ => EndCapture())
 				.AddTo(this);
+
+			BeginCapture();
 		}
 
 		void BeginCapture()
@@ -100,7 +102,7 @@ namespace WithAR20200830
 			{
 				// shouldn't happen but just in case
 				if (!arHumanBody.joints.IsCreated) continue;
-				
+
 				// set up frames
 				var trackedId = arHumanBody.trackableId;
 				if (!_capturedBodies.TryGetValue(trackedId, out var frames))
