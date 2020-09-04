@@ -1,10 +1,9 @@
-using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Photon.Pun;
 using UnityEngine;
 
-namespace WithAR20200830
+namespace WithAR20200830.Views
 {
 	public class SpawnController : MonoBehaviourPunCallbacks
 	{

@@ -1,6 +1,7 @@
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
+using WithAR20200830.Views;
 
 namespace WithAR20200830
 {

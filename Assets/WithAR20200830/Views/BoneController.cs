@@ -5,7 +5,7 @@ using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 using WithAR20200830.Models;
 
-namespace WithAR20200830
+namespace WithAR20200830.Views
 {
     public class BoneController : MonoBehaviour
     {

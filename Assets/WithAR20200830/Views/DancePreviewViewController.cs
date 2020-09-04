@@ -6,7 +6,7 @@ using WithAR20200830.Business;
 using WithAR20200830.Models;
 using WithAR20200830.Utils;
 
-namespace WithAR20200830
+namespace WithAR20200830.Views
 {
 	public class DancePreviewViewController : MonoBehaviour
 	{
