@@ -1757,7 +1757,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 147d61fcb29841acad4f0770ec1a58cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _danceController: {fileID: 1962897933}
+  _danceAnimator: {fileID: 1962897933}
   _previewViewRoot: {fileID: 1559485705}
   _cancelButton: {fileID: 432106507}
   _submitButton: {fileID: 1886432613}

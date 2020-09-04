@@ -11,7 +11,7 @@ namespace WithAR20200830.Views
 	public class DancePreviewViewController : MonoBehaviour
 	{
 		[SerializeField]
-		AvatarDanceController _danceController;
+		AvatarDanceAnimator _danceAnimator;
 
 		[SerializeField]
 		GameObject _previewViewRoot;
@@ -34,14 +34,14 @@ namespace WithAR20200830.Views
 		OnlineDanceClient _onlineDanceClient;
 		RenderTexture _previewRenderTexture;
 		CancellationTokenSource _canceller;
-		AvatarDanceController.Config _previewConfig;
+		AvatarDanceAnimator.Config _previewConfig;
 
 		public Dance Capture { private get; set; }
 
 		void Start()
 		{
 			_onlineDanceClient = ServiceLocator.Instance.Locate<OnlineDanceClient>();
-			_previewConfig = new AvatarDanceController.Config();
+			_previewConfig = new AvatarDanceAnimator.Config();
 
 			_previewViewRoot.SetActive(false);
 
@@ -92,7 +92,7 @@ namespace WithAR20200830.Views
 
 			SetActive(true);
 
-			_danceController.StartDancing(Capture, _canceller.Token, _previewConfig);
+			_danceAnimator.StartDancing(Capture, _canceller.Token, _previewConfig);
 		}
 	}
 }

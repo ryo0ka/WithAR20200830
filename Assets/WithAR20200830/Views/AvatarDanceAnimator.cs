@@ -6,7 +6,7 @@ using WithAR20200830.Models;
 
 namespace WithAR20200830.Views
 {
-	public class AvatarDanceController : MonoBehaviour
+	public class AvatarDanceAnimator : MonoBehaviour
 	{
 		public sealed class Config
 		{

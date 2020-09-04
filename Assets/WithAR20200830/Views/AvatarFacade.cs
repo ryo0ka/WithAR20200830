@@ -11,7 +11,7 @@ namespace WithAR20200830.Views
 	public class AvatarFacade : MonoBehaviourPun
 	{
 		[SerializeField]
-		AvatarDanceController _danceController;
+		AvatarDanceAnimator _danceAnimator;
 
 		DanceRepository _danceRepository;
 		OnlineDanceClient _danceClient;
@@ -53,7 +53,7 @@ namespace WithAR20200830.Views
 		void OnNewDanceStarted(CloudDance dance)
 		{
 			TaskUtils.Reset(ref _danceCanceller);
-			_danceController.StartDancing(dance.Dance, _danceCanceller.Token);
+			_danceAnimator.StartDancing(dance.Dance, _danceCanceller.Token);
 		}
 
 		void OnDanceEnded()
@@ -72,7 +72,7 @@ namespace WithAR20200830.Views
 			var dance = await _danceRepository.GetOrDownload(danceObjId);
 
 			TaskUtils.Reset(ref _danceCanceller);
-			_danceController.StartDancing(dance, _danceCanceller.Token);
+			_danceAnimator.StartDancing(dance, _danceCanceller.Token);
 		}
 
 		[PunRPC]
