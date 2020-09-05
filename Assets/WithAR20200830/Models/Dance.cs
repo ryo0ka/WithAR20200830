@@ -36,13 +36,14 @@ namespace WithAR20200830.Models
 
 	public struct Dance
 	{
+		public Guid Id { get; set; }
 		public IReadOnlyList<DanceFrame> Frames { get; set; }
 
 		#region autogen
 
 		bool Equals(Dance other)
 		{
-			return Frames.SequenceEqual(other.Frames);
+			return Id.Equals(other.Id);
 		}
 
 		public override bool Equals(object obj)
@@ -52,7 +53,7 @@ namespace WithAR20200830.Models
 
 		public override int GetHashCode()
 		{
-			return (Frames?.GetSeqHashCode() ?? 0);
+			return Id.GetHashCode();
 		}
 
 		#endregion

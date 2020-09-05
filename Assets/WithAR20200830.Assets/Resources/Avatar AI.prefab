@@ -9,13 +9,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3433040111814227323}
-  - component: {fileID: 3433040111814227320}
+  - component: {fileID: 6876230959196421657}
   - component: {fileID: 7504096649251814491}
-  - component: {fileID: 3433040111814227321}
+  - component: {fileID: 5748207645880443834}
   - component: {fileID: 4940744234570849054}
   - component: {fileID: 8977030476133311014}
   m_Layer: 0
-  m_Name: Avatar
+  m_Name: Avatar AI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -34,11 +34,11 @@ Transform:
   m_Children:
   - {fileID: 1022679398879831166}
   - {fileID: 2303133438182883315}
-  - {fileID: 8765301336325136562}
+  - {fileID: 428000412352219403}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3433040111814227320
+--- !u!114 &6876230959196421657
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -47,13 +47,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 3433040111814227318}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: abca52ac5df94fd99c6e8ce6d3988b1b, type: 3}
+  m_Script: {fileID: 11500000, guid: 5854f97a020e409fbcba67b0ce85975d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _followAnchor: {fileID: 428000412352219403}
   _danceAnimator: {fileID: 4772496462441905738}
-  _controller: {fileID: 7504096649251814491}
-  _cameraAnchor: {fileID: 2303133438182883315}
-  _followAnchor: {fileID: 8765301336325136562}
 --- !u!114 &7504096649251814491
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -69,7 +67,7 @@ MonoBehaviour:
   _body: {fileID: 4940744234570849054}
   _switchSecs: 0.2
   _manualTarget: {fileID: 0}
---- !u!114 &3433040111814227321
+--- !u!114 &5748207645880443834
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -151,7 +149,7 @@ Transform:
   m_Father: {fileID: 3433040111814227323}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &7633695484964427278
+--- !u!1 &7747913903796060667
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -159,7 +157,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 8765301336325136562}
+  - component: {fileID: 428000412352219403}
   m_Layer: 0
   m_Name: Follow Anchor
   m_TagString: Untagged
@@ -167,14 +165,14 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &8765301336325136562
+--- !u!4 &428000412352219403
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7633695484964427278}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_GameObject: {fileID: 7747913903796060667}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []

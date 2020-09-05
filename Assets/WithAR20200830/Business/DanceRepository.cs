@@ -8,21 +8,34 @@ using WithAR20200830.Models;
 namespace WithAR20200830.Business
 {
 	// Upload, download & keep track of unique dances 
-	public sealed class DanceRepository
+	public sealed class DanceRepository : IDisposable
 	{
+		readonly HttpClient _danceDownloader;
 		readonly GcpStorageClient _storageClient;
-		readonly Dictionary<string, Dance> _dances;
+		readonly Dictionary<string, Dance> _dancesUrlMap;
+		readonly Dictionary<Guid, string> _dancesIdMap;
 
 		public DanceRepository(GcpStorageClient storageClient)
 		{
 			_storageClient = storageClient;
-			_dances = new Dictionary<string, Dance>();
+			_dancesUrlMap = new Dictionary<string, Dance>();
+			_dancesIdMap = new Dictionary<Guid, string>();
+			_danceDownloader = new HttpClient();
 		}
 
-		public async UniTask<string> Upload(Dance dance)
+		public void Dispose() => _danceDownloader.Dispose();
+
+		public async UniTask<string> GetOrUpload(Dance dance)
 		{
 			try
 			{
+				await UniTask.SwitchToThreadPool();
+
+				if (_dancesIdMap.TryGetValue(dance.Id, out var existingDanceUrl))
+				{
+					return existingDanceUrl;
+				}
+
 				var bytes = DanceConverter.SerializeDance(dance);
 
 				// debug data size
@@ -32,7 +45,8 @@ namespace WithAR20200830.Business
 				var objName = $"{Guid.NewGuid():N}.dance"; // can be anything
 				var objUrl = await _storageClient.UploadFile(objName, bytes);
 
-				_dances.Add(objUrl, dance);
+				_dancesUrlMap.Add(objUrl, dance);
+				_dancesIdMap.Add(dance.Id, objUrl);
 
 				return objUrl;
 			}
@@ -46,15 +60,18 @@ namespace WithAR20200830.Business
 		{
 			try
 			{
-				if (!_dances.TryGetValue(url, out var dance))
+				await UniTask.SwitchToThreadPool();
+
+				if (!_dancesUrlMap.TryGetValue(url, out var dance))
 				{
-					var danceBinary = await Download(url);
+					var danceBinary = await DownloadBytes(url);
 
 					// could've been downloaded by other processes
-					if (_dances.TryGetValue(url, out dance)) return dance;
+					if (_dancesUrlMap.TryGetValue(url, out dance)) return dance;
 
 					dance = DanceConverter.DeserializeDance(danceBinary);
-					_dances.Add(url, dance);
+					_dancesUrlMap.Add(url, dance);
+					_dancesIdMap.Add(dance.Id, url);
 				}
 
 				return dance;
@@ -65,10 +82,9 @@ namespace WithAR20200830.Business
 			}
 		}
 
-		static async UniTask<byte[]> Download(string url)
+		async UniTask<byte[]> DownloadBytes(string url)
 		{
-			using (var httpClient = new HttpClient())
-			using (var req = await httpClient.GetAsync(url))
+			using (var req = await _danceDownloader.GetAsync(url).ConfigureAwait(false))
 			{
 				if (!req.IsSuccessStatusCode)
 				{

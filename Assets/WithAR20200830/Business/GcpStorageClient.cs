@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using Cysharp.Threading.Tasks;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
 
@@ -12,6 +13,7 @@ namespace WithAR20200830.Business
 	{
 		const string Host = "https://storage.googleapis.com";
 		const string UploadPathFormat = "upload/storage/v1/b/{0}/o";
+		const string DownloadPathFormat = "storage/v1/b/{0}/o";
 
 		readonly string _bucketName;
 		readonly string _apiKey;
@@ -31,36 +33,75 @@ namespace WithAR20200830.Business
 		// https://cloud.google.com/storage/docs/json_api/v1/objects/insert
 		public async UniTask<string> UploadFile(string fileName, byte[] fileBytes)
 		{
-			var queries = new Dictionary<string, string>
+			try
 			{
-				{"key", _apiKey},
-				{"name", fileName},
-				{"uploadType", "media"},
-			};
+				await UniTask.SwitchToThreadPool();
 
-			Debug.Log("uploading...");
-
-			var path = string.Format(UploadPathFormat, _bucketName);
-			var queriedPath = MakeUrl(path, queries);
-			Debug.Log(queriedPath);
-
-			var content = new ByteArrayContent(fileBytes);
-			using (var res = await _httpClient.PostAsync(queriedPath, content))
-			{
-				Debug.Log($"done uploading: {res.StatusCode}");
-
-				var resText = await res.Content.ReadAsStringAsync();
-				if (!res.IsSuccessStatusCode)
+				var queries = new Dictionary<string, string>
 				{
-					throw new Exception($"Failed upload: {resText}");
+					{"key", _apiKey},
+					{"name", fileName},
+					{"uploadType", "media"},
+				};
+
+				Debug.Log("uploading...");
+
+				var path = string.Format(UploadPathFormat, _bucketName);
+				var queriedPath = MakeUrl(path, queries);
+				Debug.Log(queriedPath);
+
+				var content = new ByteArrayContent(fileBytes);
+				using (var res = await _httpClient.PostAsync(queriedPath, content).ConfigureAwait(false))
+				{
+					Debug.Log($"done uploading: {res.StatusCode}");
+
+					var resText = await res.Content.ReadAsStringAsync();
+					if (!res.IsSuccessStatusCode)
+					{
+						throw new Exception($"Failed upload: {resText}");
+					}
+
+					Debug.Log(resText);
+					var resJson = JObject.Parse(resText);
+					var objUrl = resJson["mediaLink"].Value<string>();
+					Debug.Log($"obj url: {objUrl}");
+
+					return objUrl;
 				}
+			}
+			finally
+			{
+				await UniTask.SwitchToMainThread();
+			}
+		}
 
-				Debug.Log(resText);
-				var resJson = JObject.Parse(resText);
-				var objUrl = resJson["mediaLink"].Value<string>();
-				Debug.Log($"obj url: {objUrl}");
+		public async UniTask<IEnumerable<string>> DownloadFileUrls()
+		{
+			try
+			{
+				var queries = new Dictionary<string, string>
+				{
+					{"key", _apiKey},
+				};
 
-				return objUrl;
+				var path = string.Format(DownloadPathFormat, _bucketName);
+				var queriedPath = MakeUrl(path, queries);
+
+				using (var res = await _httpClient.GetAsync(queriedPath).ConfigureAwait(false))
+				{
+					var resText = await res.Content.ReadAsStringAsync();
+					if (!res.IsSuccessStatusCode)
+					{
+						throw new Exception($"Failed download: {resText}");
+					}
+
+					var items = JsonConvert.DeserializeObject<GcpObjectList>(resText);
+					return items.Items?.Select(i => i.FileUrl) ?? Enumerable.Empty<string>();
+				}
+			}
+			finally
+			{
+				await UniTask.SwitchToThreadPool();
 			}
 		}
 

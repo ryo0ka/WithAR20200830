@@ -4,9 +4,9 @@ using Cysharp.Threading.Tasks;
 using UnityEngine;
 using WithAR20200830.Models;
 
-namespace WithAR20200830
+namespace WithAR20200830.Views
 {
-	public class AvatarDanceController : MonoBehaviour
+	public class AvatarDanceAnimator : MonoBehaviour
 	{
 		public sealed class Config
 		{
@@ -17,8 +17,14 @@ namespace WithAR20200830
 		[SerializeField]
 		BoneController _boneController;
 
+		CancellationTokenSource _cancellerSource;
+
 		public async void StartDancing(Dance dance, CancellationToken canceller, Config config = null)
 		{
+			_cancellerSource?.Cancel();
+			_cancellerSource?.Dispose();
+			_cancellerSource = CancellationTokenSource.CreateLinkedTokenSource(canceller);
+
 			_boneController.InitializeSkeletonJoints();
 			
 			if (!dance.Frames.Any()) return;

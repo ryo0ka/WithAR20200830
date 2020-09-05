@@ -24,7 +24,7 @@ namespace WithAR20200830.Business
 
 		public async UniTask StartNewDance(Dance dance)
 		{
-			var objUrl = await _danceRepository.Upload(dance);
+			var objUrl = await _danceRepository.GetOrUpload(dance);
 
 			_currentDance.Value = new CloudDance
 			{

@@ -1,9 +1,8 @@
-using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using WithAR20200830.Utils;
 
-namespace WithAR20200830
+namespace WithAR20200830.Views
 {
 	public sealed class SceneController : MonoBehaviourSingleton<SceneController>
 	{

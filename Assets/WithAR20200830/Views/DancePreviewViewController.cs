@@ -1,4 +1,5 @@
 using System.Threading;
+using Cysharp.Threading.Tasks;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,12 +7,12 @@ using WithAR20200830.Business;
 using WithAR20200830.Models;
 using WithAR20200830.Utils;
 
-namespace WithAR20200830
+namespace WithAR20200830.Views
 {
 	public class DancePreviewViewController : MonoBehaviour
 	{
 		[SerializeField]
-		AvatarDanceController _danceController;
+		AvatarDanceAnimator _danceAnimator;
 
 		[SerializeField]
 		GameObject _previewViewRoot;
@@ -34,14 +35,14 @@ namespace WithAR20200830
 		OnlineDanceClient _onlineDanceClient;
 		RenderTexture _previewRenderTexture;
 		CancellationTokenSource _canceller;
-		AvatarDanceController.Config _previewConfig;
+		AvatarDanceAnimator.Config _previewConfig;
 
 		public Dance Capture { private get; set; }
 
 		void Start()
 		{
 			_onlineDanceClient = ServiceLocator.Instance.Locate<OnlineDanceClient>();
-			_previewConfig = new AvatarDanceController.Config();
+			_previewConfig = new AvatarDanceAnimator.Config();
 
 			_previewViewRoot.SetActive(false);
 
@@ -77,7 +78,7 @@ namespace WithAR20200830
 		{
 			TaskUtils.Cancel(ref _canceller);
 
-			_onlineDanceClient.StartNewDance(Capture);
+			_onlineDanceClient.StartNewDance(Capture).Forget(Debug.LogException);
 			SceneController.Instance.UnloadDanceCaptureScene();
 		}
 
@@ -92,7 +93,7 @@ namespace WithAR20200830
 
 			SetActive(true);
 
-			_danceController.StartDancing(Capture, _canceller.Token, _previewConfig);
+			_danceAnimator.StartDancing(Capture, _canceller.Token, _previewConfig);
 		}
 	}
 }

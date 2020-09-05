@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UniRx;
@@ -7,7 +8,7 @@ using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 using WithAR20200830.Models;
 
-namespace WithAR20200830
+namespace WithAR20200830.Views
 {
 	public class DanceCaptureViewController : MonoBehaviour
 	{
@@ -85,6 +86,7 @@ namespace WithAR20200830
 
 			var dance = new Dance
 			{
+				Id = Guid.NewGuid(),
 				Frames = capturedFrames,
 			};
 

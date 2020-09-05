@@ -33,6 +33,7 @@ namespace WithAR20200830.Models
 			using (var stream = new MemoryStream(1024))
 			using (var writer = new BinaryWriter(stream))
 			{
+				writer.Write(dance.Id.ToString("N"));
 				writer.Write(dance.Frames.Count);
 				foreach (var frame in dance.Frames)
 				{
@@ -59,6 +60,7 @@ namespace WithAR20200830.Models
 			using (var stream = new MemoryStream(danceBinary))
 			using (var reader = new BinaryReader(stream))
 			{
+				var id = reader.ReadString();
 				var frameCount = reader.ReadInt32();
 				var frames = new DanceFrame[frameCount];
 
@@ -94,6 +96,7 @@ namespace WithAR20200830.Models
 
 				return new Dance
 				{
+					Id = Guid.Parse(id),
 					Frames = frames,
 				};
 			}
