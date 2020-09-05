@@ -1,4 +1,4 @@
-namespace WithAR20200830.Views
+namespace WithAR20200830.Views.Dances
 {
 	public partial class BoneController
 	{

@@ -1,10 +1,9 @@
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
-using WithAR20200830.Business;
 using WithAR20200830.Models;
 
-namespace WithAR20200830.Views
+namespace WithAR20200830.Business
 {
 	public sealed class RandomDanceGenerator
 	{

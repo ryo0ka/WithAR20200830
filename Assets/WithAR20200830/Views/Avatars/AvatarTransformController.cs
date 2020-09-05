@@ -1,11 +1,10 @@
-using System;
 using UnityEngine;
 using WithAR20200830.Utils;
 
-namespace WithAR20200830.Views
+namespace WithAR20200830.Views.Avatars
 {
 	// for local users; remote users should be controlled by their own client
-	public sealed class AvatarCarouselController : MonoBehaviour
+	public sealed class AvatarTransformController : MonoBehaviour
 	{
 		[SerializeField]
 		Rigidbody _body;

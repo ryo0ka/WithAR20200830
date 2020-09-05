@@ -1,4 +1,3 @@
-using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Photon.Pun;
@@ -7,16 +6,17 @@ using UnityEngine;
 using WithAR20200830.Business;
 using WithAR20200830.Models;
 using WithAR20200830.Utils;
+using WithAR20200830.Views.Dances;
 
-namespace WithAR20200830.Views
+namespace WithAR20200830.Views.Avatars
 {
-	public class AvatarFacade : MonoBehaviourPun, IAvatar
+	public class AvatarMain : MonoBehaviourPun, IAvatar
 	{
 		[SerializeField]
 		AvatarDanceAnimator _danceAnimator;
 
 		[SerializeField]
-		AvatarCarouselController _controller;
+		AvatarTransformController _controller;
 
 		[SerializeField]
 		Transform _cameraAnchor;

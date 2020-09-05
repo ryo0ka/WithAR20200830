@@ -1,5 +1,7 @@
+using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using WithAR20200830.Utils;
 
 namespace WithAR20200830.Views
@@ -9,11 +11,19 @@ namespace WithAR20200830.Views
 		[SerializeField]
 		Canvas _canvas;
 
+		[SerializeField]
+		Button _captureDanceButton;
+
 		Camera _mainCamera;
 
 		void Start()
 		{
 			_mainCamera = Camera.main;
+
+			_captureDanceButton
+				.OnClickAsObservable()
+				.Subscribe(_ => LoadDanceCaptureScene())
+				.AddTo(this);
 		}
 
 		public void LoadDanceCaptureScene()

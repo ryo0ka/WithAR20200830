@@ -1,13 +1,14 @@
-using System;
 using System.Threading;
 using Photon.Pun;
 using UniRx;
 using UnityEngine;
+using WithAR20200830.Business;
 using WithAR20200830.Models;
+using WithAR20200830.Views.Dances;
 
-namespace WithAR20200830.Views
+namespace WithAR20200830.Views.Avatars
 {
-	public sealed class AvatarAiFacade : MonoBehaviourPun, IAvatar
+	public sealed class AvatarAiMain : MonoBehaviourPun, IAvatar
 	{
 		[SerializeField]
 		Transform _followAnchor;

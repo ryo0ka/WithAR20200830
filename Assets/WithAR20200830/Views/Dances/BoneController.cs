@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using WithAR20200830.Models;
 
-namespace WithAR20200830.Views
+namespace WithAR20200830.Views.Dances
 {
 	public partial class BoneController : MonoBehaviour
 	{

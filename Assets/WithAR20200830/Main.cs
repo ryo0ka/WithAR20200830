@@ -5,6 +5,7 @@ using UniRx;
 using UnityEngine;
 using WithAR20200830.Business;
 using WithAR20200830.Views;
+using WithAR20200830.Views.Avatars;
 
 namespace WithAR20200830
 {

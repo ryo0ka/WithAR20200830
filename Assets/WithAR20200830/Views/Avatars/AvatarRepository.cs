@@ -2,22 +2,22 @@ using System;
 using UniRx;
 using UnityEngine;
 
-namespace WithAR20200830.Views
+namespace WithAR20200830.Views.Avatars
 {
 	public sealed class AvatarRepository : IDisposable
 	{
-		readonly ReactiveDictionary<int, AvatarFacade> _avatars;
+		readonly ReactiveDictionary<int, AvatarMain> _avatars;
 		readonly CompositeDisposable _disposable;
 
 		public AvatarRepository()
 		{
 			_disposable = new CompositeDisposable();
-			_avatars = new ReactiveDictionary<int, AvatarFacade>().AddTo(_disposable);
+			_avatars = new ReactiveDictionary<int, AvatarMain>().AddTo(_disposable);
 		}
 
 		public void Dispose() => _disposable.Dispose();
 
-		public IObservable<(int ActorNumber, AvatarFacade Avatar)> OnAvatarSpawned()
+		public IObservable<(int ActorNumber, AvatarMain Avatar)> OnAvatarSpawned()
 		{
 			return Observable.Merge(new[]
 			{
@@ -37,12 +37,12 @@ namespace WithAR20200830.Views
 			       .Select(e => e.Key);
 		}
 
-		public AvatarFacade GetAvatar(int actorNumber)
+		public AvatarMain GetAvatar(int actorNumber)
 		{
 			return _avatars[actorNumber];
 		}
 
-		public void Add(int actorNumber, AvatarFacade avatar)
+		public void Add(int actorNumber, AvatarMain avatar)
 		{
 			_avatars.Add(actorNumber, avatar);
 			Debug.Log($"avatar added: {actorNumber}");

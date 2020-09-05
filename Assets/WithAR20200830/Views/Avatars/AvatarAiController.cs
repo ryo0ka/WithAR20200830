@@ -3,7 +3,7 @@ using Photon.Pun;
 using UnityEngine;
 using WithAR20200830.Utils;
 
-namespace WithAR20200830.Views
+namespace WithAR20200830.Views.Avatars
 {
 	public class AvatarAiController : MonoBehaviourPunCallbacks
 	{
@@ -11,7 +11,7 @@ namespace WithAR20200830.Views
 		PhotonMultipointSpawner _spawner;
 
 		[SerializeField]
-		AvatarAiFacade _avatarAiPrefab;
+		AvatarAiMain _avatarAiPrefab;
 
 		[SerializeField]
 		int _initialAiCount;

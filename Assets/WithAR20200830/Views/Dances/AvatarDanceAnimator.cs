@@ -4,7 +4,7 @@ using Cysharp.Threading.Tasks;
 using UnityEngine;
 using WithAR20200830.Models;
 
-namespace WithAR20200830.Views
+namespace WithAR20200830.Views.Dances
 {
 	public class AvatarDanceAnimator : MonoBehaviour
 	{
