@@ -11,10 +11,12 @@ namespace WithAR20200830.Views
 		CarouselCameraController _cameraController;
 
 		AvatarRepository _avatarRepository;
+		CarouselObservable _carouselObservable;
 
 		void Start()
 		{
 			_avatarRepository = ServiceLocator.Instance.Locate<AvatarRepository>();
+			_carouselObservable = ServiceLocator.Instance.Locate<CarouselObservable>();
 
 			_avatarRepository
 				.OnAvatarSpawned()

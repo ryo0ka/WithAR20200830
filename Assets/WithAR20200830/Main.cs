@@ -26,6 +26,9 @@ namespace WithAR20200830
 
 			var avatarRepository = new AvatarRepository().AddTo(this);
 			ServiceLocator.Instance.Register(avatarRepository);
+
+			var carouselObservable = FindObjectOfType<CarouselObservable>();
+			ServiceLocator.Instance.Register(carouselObservable);
 		}
 
 		void Start()

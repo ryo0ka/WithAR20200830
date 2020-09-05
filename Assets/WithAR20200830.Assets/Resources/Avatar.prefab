@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 3433040111814227321}
   - component: {fileID: 4940744234570849054}
   - component: {fileID: 8977030476133311014}
+  - component: {fileID: 7504096649251814491}
   m_Layer: 0
   m_Name: Avatar
   m_TagString: Untagged
@@ -49,6 +50,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _danceAnimator: {fileID: 4772496462441905738}
+  _autoController: {fileID: 7504096649251814491}
   _cameraAnchor: {fileID: 2303133438182883315}
 --- !u!114 &3433040111814227321
 MonoBehaviour:
@@ -102,6 +104,19 @@ CapsuleCollider:
   m_Height: 1.96
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!114 &7504096649251814491
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3433040111814227318}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c5de003a409466583a32bf3e11aaaa3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _avatarRigidbody: {fileID: 4940744234570849054}
 --- !u!1 &5969807962633905060
 GameObject:
   m_ObjectHideFlags: 0
@@ -188,7 +203,7 @@ PrefabInstance:
     - target: {fileID: 2420072047233244816, guid: d93d5415c51fa49aba66e61ec7b78b34,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2420072047233244816, guid: d93d5415c51fa49aba66e61ec7b78b34,
         type: 3}
@@ -198,7 +213,7 @@ PrefabInstance:
     - target: {fileID: 2420072047233244816, guid: d93d5415c51fa49aba66e61ec7b78b34,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2420072047233244816, guid: d93d5415c51fa49aba66e61ec7b78b34,
         type: 3}
@@ -213,7 +228,7 @@ PrefabInstance:
     - target: {fileID: 2420072047233244816, guid: d93d5415c51fa49aba66e61ec7b78b34,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
+      value: 180
       objectReference: {fileID: 0}
     - target: {fileID: 2420072047233244816, guid: d93d5415c51fa49aba66e61ec7b78b34,
         type: 3}

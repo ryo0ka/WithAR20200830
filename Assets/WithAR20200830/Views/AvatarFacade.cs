@@ -14,6 +14,9 @@ namespace WithAR20200830.Views
 		AvatarDanceAnimator _danceAnimator;
 
 		[SerializeField]
+		AvatarCarouselAutoController _autoController;
+
+		[SerializeField]
 		Transform _cameraAnchor;
 
 		DanceRepository _danceRepository;

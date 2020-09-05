@@ -19,5 +19,10 @@ namespace WithAR20200830.Utils
 				Mathf.SmoothDampAngle(current.y, target.y, ref currentVelocity.y, smoothTime),
 				Mathf.SmoothDampAngle(current.z, target.z, ref currentVelocity.z, smoothTime));
 		}
+
+		public static Vector3 RotatePointAroundPivot(Vector3 point, Vector3 pivot, Vector3 angles)
+		{
+			return Quaternion.Euler(angles) * (point - pivot) + pivot;
+		}
 	}
 }
