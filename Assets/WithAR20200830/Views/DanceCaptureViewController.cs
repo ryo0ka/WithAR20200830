@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
+using WithAR20200830.Business;
 using WithAR20200830.Models;
 
 namespace WithAR20200830.Views
@@ -92,6 +93,12 @@ namespace WithAR20200830.Views
 			_beginCaptureButton.interactable = true;
 			_endCaptureButton.interactable = false;
 
+			if (Application.isEditor)
+			{
+				EndCaptureOnEditor();
+				return;
+			}
+
 			if (!_capturedBodies.Any()) return;
 
 			// Use the body that's captured the longest time
@@ -106,6 +113,25 @@ namespace WithAR20200830.Views
 				Id = Guid.NewGuid(),
 				Frames = capturedFrames,
 			};
+
+			_previewViewController.Capture = dance;
+			_previewViewController.PreviewDance();
+		}
+
+		async void EndCaptureOnEditor()
+		{
+			var gcp = ServiceLocator.Instance.Locate<GcpStorageClient>();
+			var dancer = ServiceLocator.Instance.Locate<DanceRepository>();
+
+			var danceUrls = (await gcp.DownloadFileUrls()).ToArray();
+			if (!danceUrls.Any())
+			{
+				Debug.Log("Cant simulate preview: No dance found online");
+				return;
+			}
+
+			var dance = await dancer.GetOrDownload(danceUrls[0]);
+			dance.Id = Guid.NewGuid(); // trick
 
 			_previewViewController.Capture = dance;
 			_previewViewController.PreviewDance();

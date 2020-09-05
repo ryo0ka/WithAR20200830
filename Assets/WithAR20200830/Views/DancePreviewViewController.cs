@@ -1,7 +1,10 @@
+using System;
 using System.Threading;
 using UniRx;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
+using UnityEngine.UI.Extensions;
 using WithAR20200830.Business;
 using WithAR20200830.Models;
 using WithAR20200830.Utils;
@@ -21,6 +24,9 @@ namespace WithAR20200830.Views
 
 		[SerializeField]
 		Button _submitButton;
+
+		[SerializeField]
+		RangeSlider _rangeSlider;
 
 		[SerializeField]
 		RawImage _previewImage;
@@ -58,6 +64,16 @@ namespace WithAR20200830.Views
 				.Subscribe(_ => OnSubmitButtonPressed())
 				.AddTo(this);
 
+			var onRangeChanged =
+				Observable.FromEvent<UnityAction<float, float>, (float Min, float Max)>(
+					c => (min, max) => c((min, max)),
+					h => _rangeSlider.OnValueChanged.AddListener(h),
+					h => _rangeSlider.OnValueChanged.RemoveListener(h));
+
+			onRangeChanged
+				.Subscribe(n => OnTrimRangeChanged(n.Min, n.Max))
+				.AddTo(this);
+
 			_previewRenderTexture = new RenderTexture(Screen.width, Screen.height, 24);
 			_previewCamera.targetTexture = _previewRenderTexture;
 			_previewImage.texture = _previewRenderTexture;
@@ -78,15 +94,22 @@ namespace WithAR20200830.Views
 			SetActive(false);
 		}
 
+		void OnTrimRangeChanged(float minNormal, float maxNormal)
+		{
+			_previewConfig.StartTrim = minNormal;
+			_previewConfig.EndTrim = maxNormal;
+		}
+
 		async void OnSubmitButtonPressed()
 		{
 			TaskUtils.Cancel(ref _canceller);
 
 			try
 			{
-				_uploadingPanel.SetActive(false);
+				_uploadingPanel.SetActive(true);
 
-				await _onlineDanceClient.StartNewDance(Capture);
+				var dance = Capture.Trim(_previewConfig.StartTrim, _previewConfig.EndTrim);
+				await _onlineDanceClient.StartNewDance(dance);
 			}
 			finally
 			{
@@ -99,6 +122,7 @@ namespace WithAR20200830.Views
 		void SetActive(bool active)
 		{
 			_previewViewRoot.SetActive(active);
+			_previewConfig.Reset();
 		}
 
 		public void PreviewDance()
