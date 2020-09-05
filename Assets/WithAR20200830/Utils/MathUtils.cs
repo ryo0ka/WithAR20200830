@@ -24,5 +24,11 @@ namespace WithAR20200830.Utils
 		{
 			return Quaternion.Euler(angles) * (point - pivot) + pivot;
 		}
+
+		public static Vector3 WithY(this Vector3 self, float y)
+		{
+			self.y = y;
+			return self;
+		}
 	}
 }

@@ -1162,7 +1162,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _pivot: {fileID: 599230577}
-  _moveAngleDelta: 0.1
+  _moveSpeed: 0.252
   _moveDirectionFrequency: 0.4
 --- !u!114 &1265240576
 MonoBehaviour:

@@ -9,14 +9,14 @@ namespace WithAR20200830.Views
 
 		[SerializeField]
 		[Range(0.001f, 1.0f)]
-		float _moveAngleDelta;
+		float _moveSpeed;
 
 		[SerializeField]
 		[Range(0.2f, 1.0f)]
 		float _moveDirectionFrequency;
 
 		public Vector3 Pivot => _pivot.position;
-		public float MoveAngleDelta => _moveAngleDelta;
+		public float MoveSpeed => _moveSpeed;
 
 		public float DirectionSign(float distance)
 		{

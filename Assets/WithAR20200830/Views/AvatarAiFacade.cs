@@ -8,7 +8,7 @@ namespace WithAR20200830.Views
 	public sealed class AvatarAiFacade : MonoBehaviourPun
 	{
 		[SerializeField]
-		AvatarCarouselAutoController _mover;
+		AvatarCarouselController _mover;
 
 		[SerializeField]
 		AvatarDanceAnimator _danceAnimator;
