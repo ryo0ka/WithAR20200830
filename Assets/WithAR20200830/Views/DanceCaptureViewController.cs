@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UniRx;
@@ -85,6 +86,7 @@ namespace WithAR20200830.Views
 
 			var dance = new Dance
 			{
+				Id = Guid.NewGuid(),
 				Frames = capturedFrames,
 			};
 

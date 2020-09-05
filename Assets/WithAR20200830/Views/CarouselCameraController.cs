@@ -36,7 +36,11 @@ namespace WithAR20200830.Views
 		void LateUpdate()
 		{
 			if (_anchor.IsNullOrDestroyed()) return;
+			UpdateTransforms();
+		}
 
+		public void UpdateTransforms()
+		{
 			var lookVector = _pivot.position - _anchor.position;
 			if (lookVector == Vector3.zero) return;
 

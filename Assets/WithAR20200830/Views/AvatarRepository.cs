@@ -37,6 +37,11 @@ namespace WithAR20200830.Views
 			       .Select(e => e.Key);
 		}
 
+		public AvatarFacade GetAvatar(int actorNumber)
+		{
+			return _avatars[actorNumber];
+		}
+
 		public void Add(int actorNumber, AvatarFacade avatar)
 		{
 			_avatars.Add(actorNumber, avatar);

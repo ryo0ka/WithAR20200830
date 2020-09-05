@@ -48,8 +48,6 @@ namespace WithAR20200830.Views
 			_avatarRepository.Add(photonView.OwnerActorNr, this);
 			_controller.enabled = photonView.IsMine;
 
-			Debug.Log(photonView.IsMine);
-
 			if (photonView.IsMine)
 			{
 				_danceClient

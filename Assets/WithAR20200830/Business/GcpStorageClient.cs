@@ -51,7 +51,7 @@ namespace WithAR20200830.Business
 				Debug.Log(queriedPath);
 
 				var content = new ByteArrayContent(fileBytes);
-				using (var res = await _httpClient.PostAsync(queriedPath, content))
+				using (var res = await _httpClient.PostAsync(queriedPath, content).ConfigureAwait(false))
 				{
 					Debug.Log($"done uploading: {res.StatusCode}");
 
@@ -87,7 +87,7 @@ namespace WithAR20200830.Business
 				var path = string.Format(DownloadPathFormat, _bucketName);
 				var queriedPath = MakeUrl(path, queries);
 
-				using (var res = await _httpClient.GetAsync(queriedPath))
+				using (var res = await _httpClient.GetAsync(queriedPath).ConfigureAwait(false))
 				{
 					var resText = await res.Content.ReadAsStringAsync();
 					if (!res.IsSuccessStatusCode)

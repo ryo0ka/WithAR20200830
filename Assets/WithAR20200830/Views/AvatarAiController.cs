@@ -40,6 +40,7 @@ namespace WithAR20200830.Views
 
 			try
 			{
+				Debug.Log("downloading dance file urls for AI...");
 				_danceUrls = (await _cloudClient.DownloadFileUrls()).ToArray();
 			}
 			catch
@@ -50,6 +51,7 @@ namespace WithAR20200830.Views
 			finally
 			{
 				_downloadDone = true;
+				Debug.Log("Done downloading dance file urls for AI");
 			}
 		}
 
@@ -60,7 +62,7 @@ namespace WithAR20200830.Views
 			for (int i = 0; i < _initialAiCount; i++)
 			{
 				_spawner.Spawn(_avatarAiPrefab.name, true);
-				await UniTask.Delay(TimeSpan.FromSeconds(0.1f));
+				await UniTask.DelayFrame(30);
 			}
 		}
 
