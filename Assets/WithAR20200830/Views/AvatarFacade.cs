@@ -28,6 +28,7 @@ namespace WithAR20200830.Views
 		DanceRepository _danceRepository;
 		OnlineDanceClient _danceClient;
 		AvatarRepository _avatarRepository;
+		RandomDanceGenerator _randomDanceGenerator;
 		CancellationTokenSource _danceCanceller;
 
 		public Transform CameraAnchor => _cameraAnchor;
@@ -37,46 +38,50 @@ namespace WithAR20200830.Views
 		void Awake()
 		{
 			_dance = new ReactiveProperty<Dance?>().AddTo(this);
-		}
-
-		void Start()
-		{
 			_danceClient = ServiceLocator.Instance.Locate<OnlineDanceClient>();
 			_danceRepository = ServiceLocator.Instance.Locate<DanceRepository>();
 			_avatarRepository = ServiceLocator.Instance.Locate<AvatarRepository>();
+			_randomDanceGenerator = ServiceLocator.Instance.Locate<RandomDanceGenerator>();
+		}
 
+		async void Start()
+		{
 			_avatarRepository.Add(photonView.OwnerActorNr, this);
 			_controller.enabled = photonView.IsMine;
 
-			if (photonView.IsMine)
-			{
-				_danceClient
-					.CurrentDance
-					.Where(d => d != null)
-					.Subscribe(d => OnLocalNewDanceStarted(d.Value))
-					.AddTo(this);
+			if (!photonView.IsMine) return;
 
-				_danceClient
-					.CurrentDance
-					.SkipLatestValueOnSubscribe()
-					.Where(d => d == null)
-					.Subscribe(_ => OnDanceEnded())
-					.AddTo(this);
+			_danceClient
+				.CurrentDance
+				.Where(d => d != null)
+				.Subscribe(d => OnLocalNewDanceStarted(d.Value))
+				.AddTo(this);
 
-				MessageBroker
-					.Default.Receive<IAvatar>()
-					.Subscribe(a => OnAvatarClicked(a))
-					.AddTo(this);
+			_danceClient
+				.CurrentDance
+				.SkipLatestValueOnSubscribe()
+				.Where(d => d == null)
+				.Subscribe(_ => OnDanceEnded())
+				.AddTo(this);
 
-				MessageBroker
-					.Default.Receive<IAvatar>()
-					.Select(a => a.Dance)
-					.Switch()
-					.Where(d => d != null)
-					.Select(d => d.Value)
-					.Subscribe(d => OnTargetAvatarDanceChanged(d))
-					.AddTo(this);
-			}
+			MessageBroker
+				.Default.Receive<IAvatar>()
+				.Subscribe(a => OnAvatarClicked(a))
+				.AddTo(this);
+
+			MessageBroker
+				.Default.Receive<IAvatar>()
+				.Select(a => a.Dance)
+				.Switch()
+				.Where(d => d != null)
+				.Select(d => d.Value)
+				.Subscribe(d => OnTargetAvatarDanceChanged(d))
+				.AddTo(this);
+
+			var dance = await _randomDanceGenerator.GetDance();
+			await _danceClient.StartNewDance(dance.Dance);
+
+			Debug.Log("finished local avatar setup");
 		}
 
 		void OnDestroy()

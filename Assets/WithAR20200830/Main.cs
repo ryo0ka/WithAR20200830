@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using Photon.Pun;
 using Photon.Realtime;
 using UniRx;
@@ -29,6 +30,11 @@ namespace WithAR20200830
 
 			var carouselObservable = FindObjectOfType<CarouselObservable>();
 			ServiceLocator.Instance.Register(carouselObservable);
+
+			var randomDanceGenerator = new RandomDanceGenerator(cloudClient, danceRepository);
+			ServiceLocator.Instance.Register(randomDanceGenerator);
+
+			randomDanceGenerator.Warmup().Forget(Debug.LogException);
 		}
 
 		void Start()

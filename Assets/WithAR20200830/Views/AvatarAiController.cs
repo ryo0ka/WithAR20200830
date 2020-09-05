@@ -1,10 +1,6 @@
-using System;
-using System.Linq;
 using Cysharp.Threading.Tasks;
 using Photon.Pun;
-using UniRx;
 using UnityEngine;
-using WithAR20200830.Business;
 using WithAR20200830.Utils;
 
 namespace WithAR20200830.Views
@@ -20,41 +16,6 @@ namespace WithAR20200830.Views
 		[SerializeField]
 		int _initialAiCount;
 
-		GcpStorageClient _cloudClient;
-		DanceRepository _danceRepository;
-		string[] _danceUrls;
-		int _nextDanceIndex;
-		bool _downloadDone;
-
-		async void Start()
-		{
-			_cloudClient = ServiceLocator.Instance.Locate<GcpStorageClient>();
-			_danceRepository = ServiceLocator.Instance.Locate<DanceRepository>();
-
-			_spawner
-				.OnMyObjectSpawned
-				.Select(o => o.GetComponent<AvatarAiFacade>())
-				.FilterNull()
-				.Subscribe(ai => OnAiSpawned(ai))
-				.AddTo(this);
-
-			try
-			{
-				Debug.Log("downloading dance file urls for AI...");
-				_danceUrls = (await _cloudClient.DownloadFileUrls()).ToArray();
-			}
-			catch
-			{
-				_danceUrls = new string[0];
-				throw;
-			}
-			finally
-			{
-				_downloadDone = true;
-				Debug.Log("Done downloading dance file urls for AI");
-			}
-		}
-
 		public override async void OnJoinedRoom()
 		{
 			if (!PhotonNetwork.IsMasterClient) return;
@@ -64,19 +25,6 @@ namespace WithAR20200830.Views
 				_spawner.Spawn(_avatarAiPrefab.name, true);
 				await UniTask.DelayFrame(30);
 			}
-		}
-
-		async void OnAiSpawned(AvatarAiFacade ai)
-		{
-			await UniTask.WaitUntil(() => _downloadDone);
-			if (_danceUrls.Length == 0) return;
-
-			var danceUrl = _danceUrls[_nextDanceIndex];
-			_nextDanceIndex += 1;
-			_nextDanceIndex %= _danceUrls.Length;
-
-			var dance = await _danceRepository.GetOrDownload(danceUrl);
-			ai.StartDancing(dance);
 		}
 	}
 }
