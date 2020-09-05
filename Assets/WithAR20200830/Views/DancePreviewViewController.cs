@@ -1,5 +1,4 @@
 using System.Threading;
-using Cysharp.Threading.Tasks;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
@@ -32,6 +31,9 @@ namespace WithAR20200830.Views
 		[SerializeField]
 		Camera _previewCamera;
 
+		[SerializeField]
+		GameObject _uploadingPanel;
+
 		OnlineDanceClient _onlineDanceClient;
 		RenderTexture _previewRenderTexture;
 		CancellationTokenSource _canceller;
@@ -60,6 +62,8 @@ namespace WithAR20200830.Views
 			_previewCamera.targetTexture = _previewRenderTexture;
 			_previewImage.texture = _previewRenderTexture;
 			_previewImageFitter.aspectRatio = (float) Screen.width / Screen.height;
+
+			_uploadingPanel.SetActive(false);
 		}
 
 		void OnDestroy()
@@ -74,11 +78,21 @@ namespace WithAR20200830.Views
 			SetActive(false);
 		}
 
-		void OnSubmitButtonPressed()
+		async void OnSubmitButtonPressed()
 		{
 			TaskUtils.Cancel(ref _canceller);
 
-			_onlineDanceClient.StartNewDance(Capture).Forget(Debug.LogException);
+			try
+			{
+				_uploadingPanel.SetActive(false);
+
+				await _onlineDanceClient.StartNewDance(Capture);
+			}
+			finally
+			{
+				_uploadingPanel.SetActive(false);
+			}
+
 			SceneController.Instance.UnloadDanceCaptureScene();
 		}
 

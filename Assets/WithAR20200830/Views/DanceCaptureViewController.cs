@@ -24,6 +24,9 @@ namespace WithAR20200830.Views
 		[SerializeField]
 		Button _endCaptureButton;
 
+		[SerializeField]
+		Button _cancelButton;
+
 		Dictionary<TrackableId, List<DanceFrame>> _capturedBodies;
 		float _captureStartTime;
 		bool _isCapturing;
@@ -56,7 +59,21 @@ namespace WithAR20200830.Views
 				.Subscribe(_ => EndCapture())
 				.AddTo(this);
 
+			_cancelButton
+				.OnClickAsObservable()
+				.Subscribe(_ => OnCancelButtonPressed())
+				.AddTo(this);
+
 			BeginCapture();
+		}
+
+		void OnCancelButtonPressed()
+		{
+			_isCapturing = false;
+			_beginCaptureButton.interactable = true;
+			_endCaptureButton.interactable = false;
+
+			SceneController.Instance.UnloadDanceCaptureScene();
 		}
 
 		void BeginCapture()
