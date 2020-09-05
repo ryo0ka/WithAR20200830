@@ -23,9 +23,8 @@ namespace WithAR20200830.Views
 			var pivotPos = _carousel.Pivot;
 			pivotPos.y = myPos.y;
 
-			// Get the angle delta based on the "hand" of rotation (clockwise or else)
-			var handAngle = Vector3.SignedAngle(pivotPos - myPos, _avatarRigidbody.transform.forward, Vector3.up);
-			var hand = -Mathf.Sign(handAngle);
+			var distance = Vector3.Distance(myPos, pivotPos);
+			var hand = _carousel.DirectionSign(distance);
 			var moveAngleDelta = _carousel.MoveAngleDelta * hand;
 			var anglesDelta = new Vector3(0, moveAngleDelta, 0);
 

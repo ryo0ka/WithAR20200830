@@ -9,13 +9,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3433040111814227323}
-  - component: {fileID: 3433040111814227320}
-  - component: {fileID: 3433040111814227321}
   - component: {fileID: 4940744234570849054}
   - component: {fileID: 8977030476133311014}
   - component: {fileID: 7504096649251814491}
+  - component: {fileID: 6876230959196421657}
   m_Layer: 0
-  m_Name: Avatar
+  m_Name: Avatar AI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -37,43 +36,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3433040111814227320
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3433040111814227318}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: abca52ac5df94fd99c6e8ce6d3988b1b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _danceAnimator: {fileID: 4772496462441905738}
-  _autoController: {fileID: 7504096649251814491}
-  _cameraAnchor: {fileID: 2303133438182883315}
---- !u!114 &3433040111814227321
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3433040111814227318}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ObservedComponentsFoldoutOpen: 1
-  Group: 0
-  prefixField: -1
-  observableSearch: 2
-  Synchronization: 0
-  OwnershipTransfer: 0
-  ObservedComponents: []
-  viewIdField: 0
-  InstantiationId: 0
-  isRuntimeInstantiated: 0
 --- !u!54 &4940744234570849054
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -117,6 +79,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _avatarRigidbody: {fileID: 4940744234570849054}
+--- !u!114 &6876230959196421657
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3433040111814227318}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5854f97a020e409fbcba67b0ce85975d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _mover: {fileID: 7504096649251814491}
+  _danceAnimator: {fileID: 4772496462441905738}
 --- !u!1 &5969807962633905060
 GameObject:
   m_ObjectHideFlags: 0

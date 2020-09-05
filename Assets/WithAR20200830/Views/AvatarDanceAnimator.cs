@@ -17,8 +17,14 @@ namespace WithAR20200830.Views
 		[SerializeField]
 		BoneController _boneController;
 
+		CancellationTokenSource _cancellerSource;
+
 		public async void StartDancing(Dance dance, CancellationToken canceller, Config config = null)
 		{
+			_cancellerSource?.Cancel();
+			_cancellerSource?.Dispose();
+			_cancellerSource = CancellationTokenSource.CreateLinkedTokenSource(canceller);
+
 			_boneController.InitializeSkeletonJoints();
 			
 			if (!dance.Frames.Any()) return;
