@@ -1,4 +1,5 @@
 using System.Threading;
+using Cysharp.Threading.Tasks;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
@@ -77,7 +78,7 @@ namespace WithAR20200830.Views
 		{
 			TaskUtils.Cancel(ref _canceller);
 
-			_onlineDanceClient.StartNewDance(Capture);
+			_onlineDanceClient.StartNewDance(Capture).Forget(Debug.LogException);
 			SceneController.Instance.UnloadDanceCaptureScene();
 		}
 

@@ -3,6 +3,7 @@ using Photon.Realtime;
 using UniRx;
 using UnityEngine;
 using WithAR20200830.Business;
+using WithAR20200830.Views;
 
 namespace WithAR20200830
 {
@@ -15,12 +16,16 @@ namespace WithAR20200830
 			var gcpCredentialsTxt = Resources.Load<TextAsset>("gcp");
 			var gcpCredentials = new GcpCredentials(gcpCredentialsTxt.text);
 			var cloudClient = new GcpStorageClient(gcpCredentials).AddTo(this);
-			var danceRepository = new DanceRepository(cloudClient);
-			var danceClient = new OnlineDanceClient(danceRepository).AddTo(this);
-
 			ServiceLocator.Instance.Register(cloudClient);
+
+			var danceRepository = new DanceRepository(cloudClient);
 			ServiceLocator.Instance.Register(danceRepository);
+
+			var danceClient = new OnlineDanceClient(danceRepository).AddTo(this);
 			ServiceLocator.Instance.Register(danceClient);
+
+			var avatarRepository = new AvatarRepository().AddTo(this);
+			ServiceLocator.Instance.Register(avatarRepository);
 		}
 
 		void Start()

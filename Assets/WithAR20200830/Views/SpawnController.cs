@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Cysharp.Threading.Tasks;
 using Photon.Pun;
 using UnityEngine;
 
@@ -25,34 +24,29 @@ namespace WithAR20200830.Views
 			}
 		}
 
-		public override async void OnJoinedRoom()
-		{
-			await UniTask.Yield();
-
-			var spawnAnchor = _spawnAnchors[_spawnAnchorIndex];
-
-			SuccSpawnAnchorIndex();
-
-			PhotonNetwork.Instantiate(
-				_avatarPrefab.name,
-				spawnAnchor.position,
-				spawnAnchor.rotation);
-		}
-
-		void SuccSpawnAnchorIndex()
+		public override void OnJoinedRoom()
 		{
 			photonView.RPC(
 				nameof(_SuccSpawnAnchorIndex),
-				RpcTarget.AllBufferedViaServer);
+				RpcTarget.AllBufferedViaServer,
+				PhotonNetwork.LocalPlayer.ActorNumber);
 		}
 
 		[PunRPC]
-		void _SuccSpawnAnchorIndex()
+		void _SuccSpawnAnchorIndex(int actorNumber)
 		{
 			_spawnAnchorIndex += 1;
 			_spawnAnchorIndex %= _spawnAnchors.Count;
 
-			Debug.Log("succ");
+			// Spawn with the index in sync with everyone else
+			if (actorNumber == PhotonNetwork.LocalPlayer.ActorNumber)
+			{
+				var spawnAnchor = _spawnAnchors[_spawnAnchorIndex];
+				PhotonNetwork.Instantiate(
+					_avatarPrefab.name,
+					spawnAnchor.position,
+					spawnAnchor.rotation);
+			}
 		}
 	}
 }

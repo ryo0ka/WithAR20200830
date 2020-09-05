@@ -13,15 +13,25 @@ namespace WithAR20200830.Views
 		[SerializeField]
 		AvatarDanceAnimator _danceAnimator;
 
+		[SerializeField]
+		Transform _cameraAnchor;
+
 		DanceRepository _danceRepository;
 		OnlineDanceClient _danceClient;
+		AvatarRepository _avatarRepository;
+
 		CancellationTokenSource _danceCanceller;
 
-		void Awake()
+		public Transform CameraAnchor => _cameraAnchor;
+
+		void Start()
 		{
 			_danceClient = ServiceLocator.Instance.Locate<OnlineDanceClient>();
 			_danceRepository = ServiceLocator.Instance.Locate<DanceRepository>();
-			
+			_avatarRepository = ServiceLocator.Instance.Locate<AvatarRepository>();
+
+			_avatarRepository.Add(photonView.OwnerActorNr, this);
+
 			if (photonView.IsMine)
 			{
 				_danceClient
@@ -37,6 +47,11 @@ namespace WithAR20200830.Views
 					.Subscribe(_ => OnDanceEnded())
 					.AddTo(this);
 			}
+		}
+
+		void OnDestroy()
+		{
+			_avatarRepository?.Remove(photonView.OwnerActorNr);
 		}
 
 		void OnLocalNewDanceStarted(CloudDance dance)
