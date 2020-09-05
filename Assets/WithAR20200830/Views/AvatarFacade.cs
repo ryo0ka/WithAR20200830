@@ -1,4 +1,6 @@
+using System;
 using System.Threading;
+using Cysharp.Threading.Tasks;
 using Photon.Pun;
 using UniRx;
 using UnityEngine;
@@ -8,24 +10,34 @@ using WithAR20200830.Utils;
 
 namespace WithAR20200830.Views
 {
-	public class AvatarFacade : MonoBehaviourPun
+	public class AvatarFacade : MonoBehaviourPun, IAvatar
 	{
 		[SerializeField]
 		AvatarDanceAnimator _danceAnimator;
 
 		[SerializeField]
-		AvatarCarouselController controller;
+		AvatarCarouselController _controller;
 
 		[SerializeField]
 		Transform _cameraAnchor;
 
+		[SerializeField]
+		Transform _followAnchor;
+
+		ReactiveProperty<Dance?> _dance;
 		DanceRepository _danceRepository;
 		OnlineDanceClient _danceClient;
 		AvatarRepository _avatarRepository;
-
 		CancellationTokenSource _danceCanceller;
 
 		public Transform CameraAnchor => _cameraAnchor;
+		public Transform FollowAnchor => _followAnchor;
+		public IReadOnlyReactiveProperty<Dance?> Dance => _dance;
+
+		void Awake()
+		{
+			_dance = new ReactiveProperty<Dance?>().AddTo(this);
+		}
 
 		void Start()
 		{
@@ -34,6 +46,9 @@ namespace WithAR20200830.Views
 			_avatarRepository = ServiceLocator.Instance.Locate<AvatarRepository>();
 
 			_avatarRepository.Add(photonView.OwnerActorNr, this);
+			_controller.enabled = photonView.IsMine;
+
+			Debug.Log(photonView.IsMine);
 
 			if (photonView.IsMine)
 			{
@@ -49,12 +64,37 @@ namespace WithAR20200830.Views
 					.Where(d => d == null)
 					.Subscribe(_ => OnDanceEnded())
 					.AddTo(this);
+
+				MessageBroker
+					.Default.Receive<IAvatar>()
+					.Subscribe(a => OnAvatarClicked(a))
+					.AddTo(this);
+
+				MessageBroker
+					.Default.Receive<IAvatar>()
+					.Select(a => a.Dance)
+					.Switch()
+					.Where(d => d != null)
+					.Select(d => d.Value)
+					.Subscribe(d => OnTargetAvatarDanceChanged(d))
+					.AddTo(this);
 			}
 		}
 
 		void OnDestroy()
 		{
 			_avatarRepository?.Remove(photonView.OwnerActorNr);
+		}
+
+		void OnAvatarClicked(IAvatar avatar)
+		{
+			Debug.Log("avatar clicked");
+			_controller.SetManualTarget(avatar.FollowAnchor);
+		}
+
+		void OnTargetAvatarDanceChanged(Dance dance)
+		{
+			_danceClient.StartNewDance(dance).Forget(Debug.LogException);
 		}
 
 		void OnLocalNewDanceStarted(CloudDance dance)
@@ -91,6 +131,8 @@ namespace WithAR20200830.Views
 
 			TaskUtils.Reset(ref _danceCanceller);
 			_danceAnimator.StartDancing(dance, _danceCanceller.Token);
+
+			_dance.Value = dance;
 		}
 
 		[PunRPC]

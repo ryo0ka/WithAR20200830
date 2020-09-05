@@ -23,6 +23,8 @@ namespace WithAR20200830.Business
 		{
 			try
 			{
+				await UniTask.SwitchToThreadPool();
+
 				var bytes = DanceConverter.SerializeDance(dance);
 
 				// debug data size
@@ -44,8 +46,15 @@ namespace WithAR20200830.Business
 
 		public async UniTask<Dance> GetOrDownload(string url)
 		{
+			if (!url.EndsWith(".dance"))
+			{
+				throw new Exception($"Not a dance file: {url}");
+			}
+
 			try
 			{
+				await UniTask.SwitchToThreadPool();
+
 				if (!_dances.TryGetValue(url, out var dance))
 				{
 					var danceBinary = await Download(url);
