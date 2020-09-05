@@ -1,8 +1,10 @@
+using System;
 using System.Threading;
-using Cysharp.Threading.Tasks;
 using UniRx;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
+using UnityEngine.UI.Extensions;
 using WithAR20200830.Business;
 using WithAR20200830.Models;
 using WithAR20200830.Utils;
@@ -24,6 +26,9 @@ namespace WithAR20200830.Views
 		Button _submitButton;
 
 		[SerializeField]
+		RangeSlider _rangeSlider;
+
+		[SerializeField]
 		RawImage _previewImage;
 
 		[SerializeField]
@@ -31,6 +36,9 @@ namespace WithAR20200830.Views
 
 		[SerializeField]
 		Camera _previewCamera;
+
+		[SerializeField]
+		GameObject _uploadingPanel;
 
 		OnlineDanceClient _onlineDanceClient;
 		RenderTexture _previewRenderTexture;
@@ -56,10 +64,22 @@ namespace WithAR20200830.Views
 				.Subscribe(_ => OnSubmitButtonPressed())
 				.AddTo(this);
 
+			var onRangeChanged =
+				Observable.FromEvent<UnityAction<float, float>, (float Min, float Max)>(
+					c => (min, max) => c((min, max)),
+					h => _rangeSlider.OnValueChanged.AddListener(h),
+					h => _rangeSlider.OnValueChanged.RemoveListener(h));
+
+			onRangeChanged
+				.Subscribe(n => OnTrimRangeChanged(n.Min, n.Max))
+				.AddTo(this);
+
 			_previewRenderTexture = new RenderTexture(Screen.width, Screen.height, 24);
 			_previewCamera.targetTexture = _previewRenderTexture;
 			_previewImage.texture = _previewRenderTexture;
 			_previewImageFitter.aspectRatio = (float) Screen.width / Screen.height;
+
+			_uploadingPanel.SetActive(false);
 		}
 
 		void OnDestroy()
@@ -74,17 +94,35 @@ namespace WithAR20200830.Views
 			SetActive(false);
 		}
 
-		void OnSubmitButtonPressed()
+		void OnTrimRangeChanged(float minNormal, float maxNormal)
+		{
+			_previewConfig.StartTrim = minNormal;
+			_previewConfig.EndTrim = maxNormal;
+		}
+
+		async void OnSubmitButtonPressed()
 		{
 			TaskUtils.Cancel(ref _canceller);
 
-			_onlineDanceClient.StartNewDance(Capture).Forget(Debug.LogException);
+			try
+			{
+				_uploadingPanel.SetActive(true);
+
+				var dance = Capture.Trim(_previewConfig.StartTrim, _previewConfig.EndTrim);
+				await _onlineDanceClient.StartNewDance(dance);
+			}
+			finally
+			{
+				_uploadingPanel.SetActive(false);
+			}
+
 			SceneController.Instance.UnloadDanceCaptureScene();
 		}
 
 		void SetActive(bool active)
 		{
 			_previewViewRoot.SetActive(active);
+			_previewConfig.Reset();
 		}
 
 		public void PreviewDance()

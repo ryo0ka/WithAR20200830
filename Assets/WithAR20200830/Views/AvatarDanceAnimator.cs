@@ -10,8 +10,17 @@ namespace WithAR20200830.Views
 	{
 		public sealed class Config
 		{
-			public float? StartTrimNormalTime { get; set; }
-			public float? EndTrimNormalTime { get; set; }
+			// normal time start point
+			public float StartTrim { get; set; } = 0;
+			
+			// normal time end point
+			public float EndTrim { get; set; } = 1;
+
+			public void Reset()
+			{
+				StartTrim = 0;
+				EndTrim = 1;
+			}
 		}
 
 		[SerializeField]
@@ -26,25 +35,33 @@ namespace WithAR20200830.Views
 			_cancellerSource = CancellationTokenSource.CreateLinkedTokenSource(canceller);
 
 			_boneController.InitializeSkeletonJoints();
-			
+
 			if (!dance.Frames.Any()) return;
 
 			var frameIndex = 0;
 			var startTime = Time.time;
-			var timeOffset = dance.Frames[0].TimestampSecs;
 
 			while (this && !canceller.IsCancellationRequested)
 			{
+				var startTrimNormalTime = config?.StartTrim ?? 0f;
+				var startFrameIndex = (int) (startTrimNormalTime * dance.Frames.Count);
+
+				frameIndex = Mathf.Max(frameIndex, startFrameIndex);
 				var frame = dance.Frames[frameIndex];
+
 				var previewTime = Time.time - startTime;
-				if (previewTime > frame.TimestampSecs - timeOffset)
+				var firstFrameTimestamp = dance.Frames[startFrameIndex].TimestampSecs;
+				var frameTime = frame.TimestampSecs - firstFrameTimestamp;
+				if (previewTime > frameTime)
 				{
 					_boneController.ApplyBodyPose(frame);
 					frameIndex += 1;
 				}
 
 				// repeat
-				if (frameIndex >= dance.Frames.Count)
+				var endTrimNormalTime = config?.EndTrim ?? 1;
+				var endFrameIndex = (int) (endTrimNormalTime * dance.Frames.Count) - 1;
+				if (frameIndex >= endFrameIndex)
 				{
 					frameIndex = 0;
 					startTime = Time.time;

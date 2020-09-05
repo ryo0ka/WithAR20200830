@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 
@@ -8,6 +9,20 @@ namespace WithAR20200830.Models
 {
 	public static class DanceConverter
 	{
+		public static Dance Trim(this Dance self, float? start, float? end)
+		{
+			var offset = (int) (start * self.Frames.Count ?? 0);
+			var endIndex = (int) (end * self.Frames.Count ?? self.Frames.Count) - 1;
+			var length = endIndex - offset;
+			var frames = self.Frames.Skip(offset).Take(length).ToArray();
+
+			return new Dance
+			{
+				Id = Guid.NewGuid(),
+				Frames = frames,
+			};
+		}
+
 		public static DanceFrame CreateFrame(float timestampSecs, ARHumanBody arHumanBody)
 		{
 			var joints = new List<DanceJoint>();
