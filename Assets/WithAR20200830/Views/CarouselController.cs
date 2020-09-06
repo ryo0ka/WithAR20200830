@@ -4,6 +4,7 @@ using UniRx;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using WithAR20200830.Utils;
+using WithAR20200830.Views.Avatars;
 
 namespace WithAR20200830.Views
 {
@@ -13,7 +14,7 @@ namespace WithAR20200830.Views
 		PhotonMultipointSpawner _spawner;
 
 		[SerializeField]
-		AvatarFacade _avatarPrefab;
+		AvatarMain _avatarPrefab;
 
 		[SerializeField]
 		CarouselCameraController _carouselCamera;
@@ -66,7 +67,7 @@ namespace WithAR20200830.Views
 			_spawner.Spawn(_avatarPrefab.name);
 		}
 
-		void OnLocalPlayerAvatarSpawned(AvatarFacade avatar)
+		void OnLocalPlayerAvatarSpawned(AvatarMain avatar)
 		{
 			Debug.Log("spawned");
 			_carouselCamera.Anchor = avatar.CameraAnchor;

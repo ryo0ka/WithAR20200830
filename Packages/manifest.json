@@ -17,7 +17,6 @@
     }
   ],
   "dependencies": {
-    "jillejr.newtonsoft.json-for-unity": "12.0.201",
     "com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask",
     "com.neuecc.unirx": "https://github.com/neuecc/UniRx.git?path=Assets/Plugins/UniRx/Scripts",
     "com.unity.2d.sprite": "1.0.0",
@@ -30,14 +29,17 @@
     "com.unity.ide.vscode": "1.2.1",
     "com.unity.inputsystem": "1.0.0",
     "com.unity.purchasing": "2.0.6",
+    "com.unity.render-pipelines.universal": "8.2.0",
     "com.unity.test-framework": "1.1.16",
     "com.unity.textmeshpro": "3.0.1",
     "com.unity.ugui": "1.0.0",
+    "com.unity.uiextensions": "2.1.0",
     "com.unity.xr.arcore": "4.1.0-preview.7",
     "com.unity.xr.arfoundation": "4.1.0-preview.7",
     "com.unity.xr.arkit": "4.1.0-preview.7",
     "com.unity.xr.arkit-face-tracking": "4.1.0-preview.7",
     "com.unity.xr.interaction.toolkit": "0.9.4-preview",
+    "jillejr.newtonsoft.json-for-unity": "12.0.201",
     "com.unity.modules.ai": "1.0.0",
     "com.unity.modules.androidjni": "1.0.0",
     "com.unity.modules.animation": "1.0.0",
@@ -68,7 +70,6 @@
     "com.unity.modules.video": "1.0.0",
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
-    "com.unity.modules.xr": "1.0.0",
-    "com.unity.uiextensions": "2.1.0"
+    "com.unity.modules.xr": "1.0.0"
   }
 }

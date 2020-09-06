@@ -1,9 +1,11 @@
+using Cysharp.Threading.Tasks;
 using Photon.Pun;
 using Photon.Realtime;
 using UniRx;
 using UnityEngine;
 using WithAR20200830.Business;
 using WithAR20200830.Views;
+using WithAR20200830.Views.Avatars;
 
 namespace WithAR20200830
 {
@@ -29,6 +31,11 @@ namespace WithAR20200830
 
 			var carouselObservable = FindObjectOfType<CarouselObservable>();
 			ServiceLocator.Instance.Register(carouselObservable);
+
+			var randomDanceGenerator = new RandomDanceGenerator(cloudClient, danceRepository);
+			ServiceLocator.Instance.Register(randomDanceGenerator);
+
+			randomDanceGenerator.Warmup().Forget(Debug.LogException);
 		}
 
 		void Start()
